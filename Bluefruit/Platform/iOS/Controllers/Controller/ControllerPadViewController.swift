@@ -24,20 +24,21 @@ class ControllerPadViewController: UIViewController {
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
     
-    override open var shouldAutorotate: Bool {
-        return false
-    }
+//    override open var shouldAutorotate: Bool {
+//        return false
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // UI
         uartView.layer.cornerRadius = 4
         uartView.layer.masksToBounds = true
         
         // Locks the interface to the right
         UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-        
+        navigationController?.navigationBar.isHidden = false
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissController))
         // Setup buttons targets
         for subview in directionsView.subviews {
             if let button = subview as? UIButton {
@@ -50,6 +51,10 @@ class ControllerPadViewController: UIViewController {
                 setupButton(button)
             }
         }
+    }
+    
+    @objc func dismissController() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -70,9 +75,6 @@ class ControllerPadViewController: UIViewController {
         UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
 
     }
-    
-    
-    
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
@@ -169,34 +171,5 @@ class ControllerPadViewController: UIViewController {
         helpNavigationController.popoverPresentationController?.barButtonItem = sender
 
         present(helpNavigationController, animated: true, completion: nil)
-    }
-}
-
-extension UINavigationController {
-    override open var shouldAutorotate: Bool {
-        get {
-            if let visibleVC = visibleViewController {
-                return visibleVC.shouldAutorotate
-            }
-            return super.shouldAutorotate
-        }
-    }
-    
-    override open var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
-        get {
-            if let visibleVC = visibleViewController {
-                return visibleVC.preferredInterfaceOrientationForPresentation
-            }
-            return super.preferredInterfaceOrientationForPresentation
-        }
-    }
-    
-    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask{
-        get {
-            if let visibleVC = visibleViewController {
-                return visibleVC.supportedInterfaceOrientations
-            }
-            return super.supportedInterfaceOrientations
-        }
     }
 }

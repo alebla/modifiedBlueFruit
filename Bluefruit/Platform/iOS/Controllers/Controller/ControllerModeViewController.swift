@@ -354,7 +354,8 @@ extension ControllerModeViewController: UITableViewDelegate {
                 if let viewController = storyboard!.instantiateViewController(withIdentifier: "ControllerPadViewController") as? ControllerPadViewController {
                     controllerPadViewController = viewController
                     viewController.delegate = self
-                    navigationController?.show(viewController, sender: self)
+                    present(viewController, animated: true, completion: nil)
+                    //navigationController?.show(viewController, sender: self)
 
                     // Enable cache for control pad
                     controllerData.uartRxCacheReset()
