@@ -20,7 +20,7 @@ class ControllerPadViewController: UIViewController {
     @IBOutlet weak var numbersView: UIView!
     @IBOutlet weak var uartTextView: UITextView!
     @IBOutlet weak var uartView: UIView!
-
+    
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
     
@@ -51,6 +51,11 @@ class ControllerPadViewController: UIViewController {
                 setupButton(button)
             }
         }
+    }
+    
+    @IBAction func backBtnPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+        print("dismissed")
     }
     
     @objc func dismissController() {
