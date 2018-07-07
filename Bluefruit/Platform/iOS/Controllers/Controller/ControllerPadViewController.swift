@@ -23,10 +23,6 @@ class ControllerPadViewController: UIViewController {
     
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
-    
-//    override open var shouldAutorotate: Bool {
-//        return false
-//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,8 +33,7 @@ class ControllerPadViewController: UIViewController {
         
         // Locks the interface to the right
         UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-        navigationController?.navigationBar.isHidden = false
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissController))
+       
         // Setup buttons targets
         for subview in directionsView.subviews {
             if let button = subview as? UIButton {
@@ -57,39 +52,6 @@ class ControllerPadViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
         print("dismissed")
     }
-    
-    @objc func dismissController() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        print("Called!!")
-        UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-    }
-    
-    override func viewDidLayoutSubviews() {
-        print("Subviews")
-        UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-    }
-    
-    override func beginAppearanceTransition(_ isAppearing: Bool, animated: Bool) {
-        UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-    }
-    
-    override func endAppearanceTransition() {
-        UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-
-    }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .landscapeRight
-        } else {
-            return .landscapeRight
-        }
-    }
-    
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
