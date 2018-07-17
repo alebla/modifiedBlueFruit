@@ -21,6 +21,10 @@ class ControllerPadViewController: UIViewController {
     @IBOutlet weak var uartTextView: UITextView!
     @IBOutlet weak var uartView: UIView!
     
+    override var shouldAutorotate: Bool {
+        return false
+    }
+    
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
 
