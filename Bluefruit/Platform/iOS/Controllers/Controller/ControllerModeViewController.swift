@@ -409,7 +409,7 @@ extension ControllerModeViewController: ControllerModuleManagerDelegate {
 
     func reloadData() {
         // Refresh the controllerPadViewController uart text
-        self.controllerPadViewController?.setUartText(self.controllerData.uartTextBuffer())
+        //self.controllerPadViewController?.setUartText(self.controllerData.uartTextBuffer())
 
     }
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import GameController
 
 protocol ControllerPadViewControllerDelegate: class {
     func onSendControllerPadButtonStatus(tag: Int, isPressed: Bool)
@@ -18,8 +19,8 @@ class ControllerPadViewController: UIViewController {
     // UI
     @IBOutlet weak var directionsView: UIView!
     @IBOutlet weak var numbersView: UIView!
-    @IBOutlet weak var uartTextView: UITextView!
-    @IBOutlet weak var uartView: UIView!
+//    @IBOutlet weak var uartTextView: UITextView!
+//    @IBOutlet weak var uartView: UIView!
     
     override var shouldAutorotate: Bool {
         return false
@@ -27,13 +28,17 @@ class ControllerPadViewController: UIViewController {
     
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
+    var playerIndex = GCControllerPlayerIndex.index1
+    var userController = GCController()
+    var directions = [UIButton]()
+    var numbers = [UIButton]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // UI
-        uartView.layer.cornerRadius = 4
-        uartView.layer.masksToBounds = true
+//        uartView.layer.cornerRadius = 4
+//        uartView.layer.masksToBounds = true
         
         // Locks the interface to the right
         UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
@@ -41,12 +46,14 @@ class ControllerPadViewController: UIViewController {
         // Setup buttons targets
         for subview in directionsView.subviews {
             if let button = subview as? UIButton {
+                directions.append(button)
                 setupButton(button)
             }
         }
 
         for subview in numbersView.subviews {
             if let button = subview as? UIButton {
+                numbers.append(button)
                 setupButton(button)
             }
         }
@@ -54,16 +61,25 @@ class ControllerPadViewController: UIViewController {
     
     @IBAction func backBtnPressed(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
-        print("dismissed")
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        startWatchingForControllers()
+        checkForConnectedControllers()
+
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        startWatchingForControllers()
+        checkForConnectedControllers()
+
 
         // Fix: remove the UINavigationController pop gesture to avoid problems with the arrows left button
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -72,12 +88,17 @@ class ControllerPadViewController: UIViewController {
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         }
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        stopWatchingForControllers()
+    }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
 
     // MARK: - UI
+    // Here we can make some UI changes to the game pad buttons
     fileprivate func setupButton(_ button: UIButton) {
         button.layer.cornerRadius = 8
         button.layer.masksToBounds = true
@@ -96,35 +117,37 @@ class ControllerPadViewController: UIViewController {
         button.addTarget(self, action: #selector(onTouchUp(_:)), for: .touchCancel)
     }
 
-    func setUartText(_ text: String) {
-
-        // Remove the last character if is a newline character
-        let lastCharacter = text.last
-        let shouldRemoveTrailingNewline = lastCharacter == "\n" || lastCharacter == "\r" //|| lastCharacter == "\r\n"
-        //let formattedText = shouldRemoveTrailingNewline ? text.substring(to: text.index(before: text.endIndex)) : text
-        let formattedText = shouldRemoveTrailingNewline ? String(text[..<text.index(before: text.endIndex)]) : text
-        
-        //
-        uartTextView.text = formattedText
-
-        // Scroll to bottom
-        let bottom = max(0, uartTextView.contentSize.height - uartTextView.bounds.size.height)
-        uartTextView.setContentOffset(CGPoint(x: 0, y: bottom), animated: true)
-        /*
-        let textLength = text.characters.count
-        if textLength > 0 {
-            let range = NSMakeRange(textLength - 1, 1)
-            uartTextView.scrollRangeToVisible(range)
-        }*/
-    }
+//    func setUartText(_ text: String) {
+//
+//        // Remove the last character if is a newline character
+//        let lastCharacter = text.last
+//        let shouldRemoveTrailingNewline = lastCharacter == "\n" || lastCharacter == "\r" //|| lastCharacter == "\r\n"
+//        //let formattedText = shouldRemoveTrailingNewline ? text.substring(to: text.index(before: text.endIndex)) : text
+//        let formattedText = shouldRemoveTrailingNewline ? String(text[..<text.index(before: text.endIndex)]) : text
+//        
+//        //
+//        //uartTextView.text = formattedText
+//
+//        // Scroll to bottom
+//        let bottom = max(0, uartTextView.contentSize.height - uartTextView.bounds.size.height)
+//        //uartTextView.setContentOffset(CGPoint(x: 0, y: bottom), animated: true)
+//        /*
+//        let textLength = text.characters.count
+//        if textLength > 0 {
+//            let range = NSMakeRange(textLength - 1, 1)
+//            uartTextView.scrollRangeToVisible(range)
+//        }*/
+//    }
 
     // MARK: - Actions
     @objc func onTouchDown(_ sender: UIButton) {
         sendTouchEvent(tag: sender.tag, isPressed: true)
+        print("senderTag: \(sender.tag)")
     }
 
     @objc func onTouchUp(_ sender: UIButton) {
         sendTouchEvent(tag: sender.tag, isPressed: false)
+        print("senderTag: \(sender.tag)")
     }
 
     private func sendTouchEvent(tag: Int, isPressed: Bool) {
@@ -142,5 +165,150 @@ class ControllerPadViewController: UIViewController {
         helpNavigationController.popoverPresentationController?.barButtonItem = sender
 
         present(helpNavigationController, animated: true, completion: nil)
+    }
+    
+    //MARK: Controller Mirroring
+    
+    
+    
+    //MARK: MFI Controller
+    
+    func startWatchingForControllers() {
+        // Subscribe for the notes
+        let ctr = NotificationCenter.default
+        ctr.addObserver(forName: .GCControllerDidConnect, object: nil, queue: .main) { note in
+            if let ctrl = note.object as? GCController {
+                self.add(ctrl)
+            }
+        }
+        ctr.addObserver(forName: .GCControllerDidDisconnect, object: nil, queue: .main) { note in
+            if let ctrl = note.object as? GCController {
+                self.remove(ctrl)
+            }
+        }
+        // and kick off discovery
+        GCController.startWirelessControllerDiscovery(completionHandler: {})
+    }
+    
+    func stopWatchingForControllers() {
+        // Same as the first, 'cept in reverse!
+        GCController.stopWirelessControllerDiscovery()
+        
+        let ctr = NotificationCenter.default
+        ctr.removeObserver(self, name: .GCControllerDidConnect, object: nil)
+        ctr.removeObserver(self, name: .GCControllerDidDisconnect, object: nil)
+    }
+    
+    // We check to see if we need to look for conrtollers or if we should just start listening for commands
+    func checkForConnectedControllers() {
+        let controllers: [GCController] = GCController.controllers()
+        if controllers.isEmpty {
+            print("No controllers found : \(controllers)")
+            //TODO: FIX
+            //Warning: Attempt to present <UIAlertController: 0x1030d5200> on <iOS.ControllerPadViewController: 0x102791010> whose view is not in the window hierarchy!
+//            let ac = UIAlertController(title: "No controllers found", message: nil, preferredStyle: .alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .default))
+//            self.present(ac, animated: true)
+        } else {
+            print(controllers)
+        }
+    }
+    
+    func add(_ controller: GCController) {
+        let name = String(describing:controller.vendorName)
+        userController = controller
+        userController.gamepad?.valueChangedHandler = { (gamepad, element) in
+//            switch gamepad {
+//            case gamepad.buttonA:
+//                print("A")
+//            case gamepad.buttonB:
+//                print("B")
+//            case gamepad.buttonX:
+//                print("X")
+//            case gamepad.buttonY:
+//                print("Y")
+//            case gamepad.dpad.down:
+//                print("down")
+//            case gamepad.dpad.up:
+//                print("up")
+//            case gamepad.dpad.left:
+//                print("left")
+//            case gamepad.dpad.right:
+//                print("right")
+//
+//            default:
+//                print("Somethings weird")
+//            }
+            
+            if let dpad = element as? GCControllerDirectionPad {
+                if dpad.down.isPressed {
+                    self.onTouchDown(self.directions[1])
+                }
+                
+                if dpad.up.isPressed {
+                    self.onTouchDown(self.directions[0])
+                }
+                
+                if dpad.left.isPressed {
+                    self.onTouchDown(self.directions[2])
+                }
+                
+                if dpad.right.isPressed {
+                    self.onTouchDown(self.directions[3])
+                }
+                
+                //print("CTRL : \( dpad )")
+            } else if let number = element as? GCControllerButtonInput {
+                print("Numbers : \( number )")
+                if gamepad.buttonA.isPressed {
+                    self.onTouchDown(self.numbers[1])
+                }
+                
+                if gamepad.buttonB.isPressed {
+                    self.onTouchDown(self.numbers[2])
+                }
+                
+                if gamepad.buttonX.isPressed {
+                    self.onTouchDown(self.numbers[3])
+
+                }
+                
+                if gamepad.buttonY.isPressed {
+                    self.onTouchDown(self.numbers[0])
+
+                }
+            } else {
+                print("OTHR : \( element )")
+            }
+        }
+        if let gamepad = controller.extendedGamepad {
+            print("connect extended \(name, gamepad)")
+        } else if let gamepad = controller.microGamepad {
+            print("connect micro \(name, gamepad)")
+        } else {
+            print("Huh? \(name)")
+        }
+    }
+    
+    func remove(_ controller: GCController) {
+        
+    }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        print("Pressed")
+    }
+    
+    func incrementPlayerIndex() -> GCControllerPlayerIndex {
+        switch playerIndex {
+        case .index1:
+            playerIndex = .index2
+        case .index2:
+            playerIndex = .index3
+        case .index3:
+            playerIndex = .index4
+        default:
+            playerIndex = .index1
+        }
+        return playerIndex
     }
 }

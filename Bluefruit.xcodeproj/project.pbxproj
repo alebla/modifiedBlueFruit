@@ -2485,7 +2485,7 @@
 				CODE_SIGN_ENTITLEMENTS = Bluefruit/Platform/iOS/Bluefruit.entitlements;
 				DEVELOPMENT_TEAM = 75HCU23U25;
 				INFOPLIST_FILE = Bluefruit/Platform/iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.bluefruitconnect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2503,7 +2503,7 @@
 				CODE_SIGN_ENTITLEMENTS = Bluefruit/Platform/iOS/Bluefruit.entitlements;
 				DEVELOPMENT_TEAM = 75HCU23U25;
 				INFOPLIST_FILE = Bluefruit/Platform/iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.bluefruitconnect;
 				PRODUCT_NAME = "$(TARGET_NAME)";

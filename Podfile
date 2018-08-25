@@ -7,6 +7,7 @@ def shared_pods
     pod 'SwiftyXML', '~> 1.6.0'
     pod 'iOSDFULibrary', '~> 4.1.2'
     pod 'Charts', '~> 3.1.1'
+    
 end
 
 target 'iOS' do
