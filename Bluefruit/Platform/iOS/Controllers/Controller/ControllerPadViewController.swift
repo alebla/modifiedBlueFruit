@@ -147,7 +147,7 @@ class ControllerPadViewController: UIViewController {
 
     @objc func onTouchUp(_ sender: UIButton) {
         sendTouchEvent(tag: sender.tag, isPressed: false)
-        print("senderTag: \(sender.tag)")
+        //print("senderTag: \(sender.tag)")
     }
 
     private func sendTouchEvent(tag: Int, isPressed: Bool) {
@@ -243,39 +243,44 @@ class ControllerPadViewController: UIViewController {
             if let dpad = element as? GCControllerDirectionPad {
                 if dpad.down.isPressed {
                     self.onTouchDown(self.directions[1])
+                    print("down")
                 }
                 
                 if dpad.up.isPressed {
                     self.onTouchDown(self.directions[0])
+                    print("up")
                 }
                 
                 if dpad.left.isPressed {
                     self.onTouchDown(self.directions[2])
+                    print("left")
                 }
                 
                 if dpad.right.isPressed {
                     self.onTouchDown(self.directions[3])
+                    print("right")
                 }
                 
-                //print("CTRL : \( dpad )")
             } else if let number = element as? GCControllerButtonInput {
-                print("Numbers : \( number )")
                 if gamepad.buttonA.isPressed {
                     self.onTouchDown(self.numbers[1])
+                    print("a for 3")
                 }
                 
                 if gamepad.buttonB.isPressed {
                     self.onTouchDown(self.numbers[2])
+                    print("b for 4")
                 }
                 
                 if gamepad.buttonX.isPressed {
                     self.onTouchDown(self.numbers[3])
+                    print("x for 1")
 
                 }
                 
                 if gamepad.buttonY.isPressed {
                     self.onTouchDown(self.numbers[0])
-
+                    print("y for 2")
                 }
             } else {
                 print("OTHR : \( element )")
