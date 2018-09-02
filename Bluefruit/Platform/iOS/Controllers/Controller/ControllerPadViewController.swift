@@ -9,6 +9,7 @@
 import UIKit
 import Foundation
 import GameController
+import CoreMotion
 
 protocol ControllerPadViewControllerDelegate: class {
     func onSendControllerPadButtonStatus(tag: Int, isPressed: Bool)
@@ -17,6 +18,7 @@ protocol ControllerPadViewControllerDelegate: class {
 class ControllerPadViewController: UIViewController {
 
     // UI
+    @IBOutlet weak var coreMotionSwitch: UISwitch!
     @IBOutlet weak var directionsView: UIView!
     @IBOutlet weak var numbersView: UIView!
 //    @IBOutlet weak var uartTextView: UITextView!
@@ -32,11 +34,20 @@ class ControllerPadViewController: UIViewController {
     var userController = GCController()
     var directions = [UIButton]()
     var numbers = [UIButton]()
+    var parentControllerModuleManager: ControllerModuleManager!
+    
+    // Core Motion
+    var coreMotionManager = gCoreMotionManager
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // UI
+        
+        if coreMotionManager.isAccelerometerActive {
+            coreMotionSwitch.setOn(true, animated: false)
+        } else {
+            coreMotionSwitch.setOn(false, animated: false)
+        }
 //        uartView.layer.cornerRadius = 4
 //        uartView.layer.masksToBounds = true
         
@@ -166,6 +177,19 @@ class ControllerPadViewController: UIViewController {
 
         present(helpNavigationController, animated: true, completion: nil)
     }
+    
+    @IBAction func didPressSwitch(_ sender: UISwitch) {
+        print("switch pressed")
+        if gCoreMotionManager.isAccelerometerActive {
+            parentControllerModuleManager.setSensorEnabled(false, index: 1)
+//             gCoreMotionManager.stopAccelerometerUpdates()
+            return
+        }
+//        gCoreMotionManager.startAccelerometerUpdates()
+        parentControllerModuleManager.setSensorEnabled(true, index: 1)
+    }
+    
+    
     
     //MARK: Controller Mirroring
     

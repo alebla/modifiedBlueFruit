@@ -8,6 +8,10 @@
 
 import UIKit
 import WatchConnectivity
+import CoreMotion
+
+// Globals for use in controllerPadViewController
+var gCoreMotionManager = CMMotionManager()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

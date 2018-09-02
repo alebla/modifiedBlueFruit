@@ -21,6 +21,8 @@ protocol ControllerModuleManagerDelegate: class {
     func onUarRX()
 }
 
+
+
 class ControllerModuleManager: NSObject {
 
     enum ControllerType: Int {
@@ -51,7 +53,8 @@ class ControllerModuleManager: NSObject {
 
     #if os(OSX)
     #else
-    private let coreMotionManager = CMMotionManager()
+    //private let gCoreMotionManager = gCoreMotionManager
+    
     #endif
     private let locationManager = CLLocationManager()
     fileprivate var lastKnownLocation: CLLocation?
@@ -153,6 +156,7 @@ class ControllerModuleManager: NSObject {
                     }
 
                     sendCrcData(data)
+                    print("Here to be sure")
                 }
             }
         }
@@ -169,19 +173,19 @@ class ControllerModuleManager: NSObject {
 
         switch ControllerType(rawValue: index)! {
         case .attitude:
-            if let attitude = coreMotionManager.deviceMotion?.attitude {
+            if let attitude = gCoreMotionManager.deviceMotion?.attitude {
                 return [attitude.quaternion.x, attitude.quaternion.y, attitude.quaternion.z, attitude.quaternion.w]
             }
         case .accelerometer:
-            if let acceleration = coreMotionManager.accelerometerData?.acceleration {
+            if let acceleration = gCoreMotionManager.accelerometerData?.acceleration {
                 return [acceleration.x, acceleration.y, acceleration.z]
             }
         case .gyroscope:
-            if let rotation = coreMotionManager.gyroData?.rotationRate {
+            if let rotation = gCoreMotionManager.gyroData?.rotationRate {
                 return [rotation.x, rotation.y, rotation.z]
             }
         case .magnetometer:
-            if let magneticField = coreMotionManager.magnetometerData?.magneticField {
+            if let magneticField = gCoreMotionManager.magnetometerData?.magneticField {
                 return [magneticField.x, magneticField.y, magneticField.z]
             }
         case .location:
@@ -200,29 +204,29 @@ class ControllerModuleManager: NSObject {
         switch ControllerType(rawValue: index)! {
         case .attitude:
             if enabled {
-                coreMotionManager.startDeviceMotionUpdates()
+                gCoreMotionManager.startDeviceMotionUpdates()
             } else {
-                coreMotionManager.stopDeviceMotionUpdates()
+                gCoreMotionManager.stopDeviceMotionUpdates()
             }
 
         case .accelerometer:
             if enabled {
-                coreMotionManager.startAccelerometerUpdates()
+                gCoreMotionManager.startAccelerometerUpdates()
             } else {
-                coreMotionManager.stopAccelerometerUpdates()
+                gCoreMotionManager.stopAccelerometerUpdates()
             }
         case .gyroscope:
             if enabled {
-                coreMotionManager.startGyroUpdates()
+                gCoreMotionManager.startGyroUpdates()
             } else {
-                coreMotionManager.stopGyroUpdates()
+                gCoreMotionManager.stopGyroUpdates()
             }
 
         case .magnetometer:
             if enabled {
-                coreMotionManager.startMagnetometerUpdates()
+                gCoreMotionManager.startMagnetometerUpdates()
             } else {
-                coreMotionManager.stopMagnetometerUpdates()
+                gCoreMotionManager.stopMagnetometerUpdates()
             }
 
         case .location:

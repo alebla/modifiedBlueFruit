@@ -175,6 +175,8 @@ class ControllerModeViewController: PeripheralModeViewController {
 
         controllerData.sendCrcData(data)
     }
+    
+    //MARK: SENDEVENT
 
     func sendTouchEvent(tag: Int, isPressed: Bool) {
         let message = "!B\(tag)\(isPressed ? "1" : "0")"
@@ -354,6 +356,7 @@ extension ControllerModeViewController: UITableViewDelegate {
                 if let viewController = storyboard!.instantiateViewController(withIdentifier: "ControllerPadViewController") as? ControllerPadViewController {
                     controllerPadViewController = viewController
                     viewController.delegate = self
+                    viewController.parentControllerModuleManager = self.controllerData
                     present(viewController, animated: true, completion: nil)
                     //navigationController?.show(viewController, sender: self)
 

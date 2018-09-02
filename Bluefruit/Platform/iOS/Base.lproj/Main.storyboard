@@ -959,11 +959,18 @@
                                     <action selector="backBtnPressed:" destination="Y9H-cS-16y" eventType="touchUpInside" id="hOM-f5-HVR"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gif-o3-NIZ">
+                                <rect key="frame" x="308" y="69" width="51" height="31"/>
+                                <connections>
+                                    <action selector="didPressSwitch:" destination="Y9H-cS-16y" eventType="valueChanged" id="5oe-SL-RoF"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" red="0.20874811460000001" green="0.20874811460000001" blue="0.20874811460000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="QJP-ax-g0P" firstAttribute="width" secondItem="9OU-bu-Mnv" secondAttribute="width" id="29C-e5-1Sk"/>
                             <constraint firstItem="QJP-ax-g0P" firstAttribute="height" secondItem="9OU-bu-Mnv" secondAttribute="height" id="CBk-Tv-Ocs"/>
+                            <constraint firstItem="Gif-o3-NIZ" firstAttribute="top" secondItem="xom-4u-hzn" secondAttribute="top" constant="5" id="Cc7-Pb-YTk"/>
                             <constraint firstItem="xom-4u-hzn" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="9OU-bu-Mnv" secondAttribute="bottom" constant="20" id="DRn-cT-GjM"/>
                             <constraint firstItem="QJP-ax-g0P" firstAttribute="centerY" secondItem="9OU-bu-Mnv" secondAttribute="centerY" id="LdC-Ae-mIV"/>
                             <constraint firstItem="9OU-bu-Mnv" firstAttribute="width" secondItem="CzM-bS-JGy" secondAttribute="width" multiplier="0.38" priority="760" id="Ufz-tv-7hb"/>
@@ -973,6 +980,7 @@
                             <constraint firstItem="9OU-bu-Mnv" firstAttribute="centerY" secondItem="CzM-bS-JGy" secondAttribute="centerY" priority="750" id="r5t-vZ-5Re"/>
                             <constraint firstAttribute="trailingMargin" secondItem="QJP-ax-g0P" secondAttribute="trailing" constant="15" id="sP5-v4-21F"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Gnv-gn-a6A" secondAttribute="trailing" constant="20" symbolic="YES" id="sb7-dO-ZBZ"/>
+                            <constraint firstItem="xom-4u-hzn" firstAttribute="trailing" secondItem="Gif-o3-NIZ" secondAttribute="trailing" constant="18" id="zfJ-8o-fRJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xom-4u-hzn"/>
                     </view>
@@ -986,6 +994,7 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="coreMotionSwitch" destination="Gif-o3-NIZ" id="FcM-bh-ptK"/>
                         <outlet property="directionsView" destination="9OU-bu-Mnv" id="DRK-qn-cZb"/>
                         <outlet property="numbersView" destination="QJP-ax-g0P" id="8aA-ml-fm3"/>
                     </connections>
