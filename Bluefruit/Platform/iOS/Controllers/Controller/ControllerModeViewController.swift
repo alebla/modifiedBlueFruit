@@ -180,6 +180,7 @@ class ControllerModeViewController: PeripheralModeViewController {
 
     func sendTouchEvent(tag: Int, isPressed: Bool) {
         let message = "!B\(tag)\(isPressed ? "1" : "0")"
+        print(message)
         if let data = message.data(using: String.Encoding.utf8) {
             controllerData.sendCrcData(data)
         }

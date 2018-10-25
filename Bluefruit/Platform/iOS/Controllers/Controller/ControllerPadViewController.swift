@@ -242,28 +242,6 @@ class ControllerPadViewController: UIViewController {
         let name = String(describing:controller.vendorName)
         userController = controller
         userController.gamepad?.valueChangedHandler = { (gamepad, element) in
-//            switch gamepad {
-//            case gamepad.buttonA:
-//                print("A")
-//            case gamepad.buttonB:
-//                print("B")
-//            case gamepad.buttonX:
-//                print("X")
-//            case gamepad.buttonY:
-//                print("Y")
-//            case gamepad.dpad.down:
-//                print("down")
-//            case gamepad.dpad.up:
-//                print("up")
-//            case gamepad.dpad.left:
-//                print("left")
-//            case gamepad.dpad.right:
-//                print("right")
-//
-//            default:
-//                print("Somethings weird")
-//            }
-            
             if let dpad = element as? GCControllerDirectionPad {
                 if dpad.down.isPressed {
                     self.onTouchDown(self.directions[1])
@@ -306,6 +284,13 @@ class ControllerPadViewController: UIViewController {
                     self.onTouchDown(self.numbers[0])
                     print("y for 2")
                 }
+                
+                if gamepad.leftShoulder.isPressed {
+                }
+                
+                if gamepad.rightShoulder.isPressed {
+                }
+                
             } else {
                 print("OTHR : \( element )")
             }
